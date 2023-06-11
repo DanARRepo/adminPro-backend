@@ -11,16 +11,16 @@ const app = express();
 // Configurar CORS
 app.use( cors() );
 
+// Lectura y parseo del body
+app.use( express.json() );
+
 // Base de datos
 dbConnection();
 
 // Rutas
-app.get('/', (req, res) => {
-    res.json({
-        ok: true,
-        msg: 'Hola amigos de youtube'
-    })
-})
+app.use( '/api/users', require('./routes/users.routes') );
+app.use( '/api/login', require('./routes/auth.routes') );
+
 
 // mean_user
 // erlEnRbGrfzT1FM8
