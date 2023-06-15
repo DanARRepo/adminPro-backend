@@ -18,8 +18,12 @@ app.use( express.json() );
 dbConnection();
 
 // Rutas
-app.use( '/api/users', require('./routes/users.routes') );
+app.use( '/api/all', require('./routes/search.routes') );
 app.use( '/api/login', require('./routes/auth.routes') );
+app.use( '/api/users', require('./routes/users.routes') );
+app.use( '/api/doctors', require('./routes/doctors.routes') );
+app.use( '/api/hospitals', require('./routes/hostpitals.routes') );
+app.use( '/api/uploads', require('./routes/uploads.routes') );
 
 
 // mean_user
