@@ -18,8 +18,13 @@ router.post( '/', [
     validateFields
 ], postDoctors );
 
-router.put( '/:id', [], putDoctors );
+router.put( '/:id', [
+    validateJWT,
+    check('name', 'Doctors name is required').not().isEmpty(),
+    check('hospital', 'Hospital id must be valid').isMongoId(),
+    validateFields
+], putDoctors );
 
-router.delete( '/:id', deleteDoctors );
+router.delete( '/:id', validateJWT, deleteDoctors );
 
 module.exports = router;

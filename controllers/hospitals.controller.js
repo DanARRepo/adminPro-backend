@@ -37,18 +37,71 @@ const postHospitals = async(req, res = response) => {
     
 }
 
-const putHospitals = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'PutHospitals'
-    });
+const putHospitals = async(req, res = response) => {
+
+    const id = req.params.id;
+    const uid = req.uid;
+
+    try {
+
+        const hospitalDB = await Hospital.findById(id);
+
+        if ( !hospitalDB ) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Hospital not found by id'
+            });
+        }
+
+        const hospitalChanges = {
+            ...req.body,
+            user: uid
+        }
+
+        const updatedHospital = await Hospital.findByIdAndUpdate( id, hospitalChanges, { new: true } );
+
+        res.json({
+            ok: true,
+            hospital: updatedHospital
+        });
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Unexpected error'
+        });
+    }
 }
 
-const deleteHospitals = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'DeleteHospitals'
-    });
+const deleteHospitals = async(req, res = response) => {
+    const id = req.params.id;
+
+    try {
+
+        const hospitalDB = await Hospital.findById(id);
+
+        if ( !hospitalDB ) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Hospital not found by id'
+            });
+        }
+
+        await Hospital.findByIdAndDelete( id );
+
+        res.json({
+            ok: true,
+            msg: 'Hospital deleted'
+        });
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Unexpected error'
+        });
+    }
 }
 
 module.exports = {

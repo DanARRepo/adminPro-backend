@@ -38,38 +38,69 @@ const postDoctors = async(req, res = response) => {
 
 const putDoctors = async(req, res = response) => {
 
-    // const uid = req.uid;
-    // const doctor = await new Doctor({
-    //     user: uid,
-    // });
+    const id = req.params.id;
+    const uid = req.uid;
 
-    // try {
+    try {
 
-    //     const doctorDB = await doctor.save();
+        const doctorDB = await Doctor.findById(id);
 
-    //     res.json({
-    //         ok: true,
-    //         doctor: doctorDB
-    //     });
+        if ( !doctorDB ) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Doctor not found by id'
+            });
+        }
+
+        const doctorChanges = {
+            ...req.body,
+            user: uid
+        }
+
+        const updatedDoctor = await Doctor.findByIdAndUpdate( id, doctorChanges, { new: true } );
+
+        res.json({
+            ok: true,
+            dorctor: updatedDoctor
+        });
         
-    // } catch (error) {
-    //     console.log(error);
-    //     res.status(500).json({
-    //         ok: false,
-    //         msg: 'Unexpected error'
-    //     });
-    // }
-    res.json({
-        ok: true,
-        msg: 'putDoctors'
-    });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Unexpected error'
+        });
+    }
 }
 
-const deleteDoctors = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'deleteDoctors'
-    });
+const deleteDoctors = async(req, res = response) => {
+    const id = req.params.id;
+
+    try {
+
+        const doctorDB = await Doctor.findById(id);
+
+        if ( !doctorDB ) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Doctor not found by id'
+            });
+        }
+
+        await Doctor.findByIdAndDelete( id );
+
+        res.json({
+            ok: true,
+            msg: 'Doctor deleted'
+        });
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Unexpected error'
+        });
+    }
 }
 
 module.exports = {
