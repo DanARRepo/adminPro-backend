@@ -84,12 +84,19 @@ const updateUser = async(req, res = response) => {
             if (emailExists) {
                 return res.status(400).json({
                     ok: false,
-                    msg: 'user with this email already exists'
+                    msg: 'User with this email already exists'
                 });
             }
         }
 
-        fields.email = email;
+        if ( !userDB.google ) {
+            fields.email = email;
+        } else if ( userDB.email !== email ) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Users with google email cant change their email address'
+            });
+        }
 
         const updatedUser = await User.findByIdAndUpdate( uid, fields, {new: true} );
 
